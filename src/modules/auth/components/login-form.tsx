@@ -22,8 +22,8 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
+import { Button } from '@/components/ui/button'
 
 export function LoginForm({
   className,
@@ -50,7 +50,7 @@ export function LoginForm({
         fetchOptions: {
           onSuccess: () => {
             navigate({
-              to: '/',
+              to: '/dashboard',
             })
             toast.success('Login successful')
           },

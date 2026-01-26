@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from 'lucide-react'
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { Link, Outlet, createFileRoute } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/button'
 

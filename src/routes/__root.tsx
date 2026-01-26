@@ -40,7 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider>
           {children}
-          <Toaster position="top-center" closeButton />
+          <Toaster position="top-center" invert closeButton />
         </ThemeProvider>
         <TanStackDevtools
           config={{

@@ -52,7 +52,7 @@ export function RegisterForm({
         fetchOptions: {
           onSuccess: () => {
             navigate({
-              to: '/',
+              to: '/dashboard',
             })
             toast.success('Register successful')
           },

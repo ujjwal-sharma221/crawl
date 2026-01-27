@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { getServerSession } from '@/lib/auth'
+import { getServerSession } from '@/modules/auth/functions/get-server-session'
 
 export const Route = createFileRoute('/dashboard/')({
   component: RouteComponent,
@@ -8,7 +8,6 @@ export const Route = createFileRoute('/dashboard/')({
 })
 
 function RouteComponent() {
-  const data = Route.useLoaderData()
-
-  return <div>Hello {data.user.name}</div>
+  const { user } = Route.useLoaderData()
+  return <div>Hello {user.email}</div>
 }

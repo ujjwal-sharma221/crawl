@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { type User } from 'better-auth'
 import { Link } from '@tanstack/react-router'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Bookmark01Icon } from '@hugeicons/core-free-icons'
@@ -18,9 +18,13 @@ import {
 import { NavUser } from '@/components/nav-user'
 import { SidebarPrimary } from '@/modules/dashboard/components/sidebar-primary'
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps {
+  user: User
+}
+
+export function AppSidebar({ user }: AppSidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -42,7 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarPrimary />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

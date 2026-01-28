@@ -132,5 +132,5 @@ export function BulkTab() {
 
 const BulkImportSchema = z.object({
   url: z.url(),
-  search: z.string().optional(),
+  search: z.string(),
 })

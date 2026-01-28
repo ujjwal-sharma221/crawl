@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { scrapeUrlFn } from '../../functions/items/scrape-url'
 
 export function SingleTab() {
   const [isPending, startTransition] = useTransition()
@@ -30,8 +31,8 @@ export function SingleTab() {
       onSubmit: SingleImportSchema,
     },
     onSubmit: async ({ value }) => {
-      startTransition(() => {
-        alert(value)
+      startTransition(async () => {
+        await scrapeUrlFn({ data: value })
       })
     },
   })
@@ -100,6 +101,6 @@ export function SingleTab() {
   )
 }
 
-const SingleImportSchema = z.object({
+export const SingleImportSchema = z.object({
   url: z.url(),
 })

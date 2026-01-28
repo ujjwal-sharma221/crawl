@@ -3,8 +3,8 @@ import { createServerFn } from '@tanstack/react-start'
 
 import { prisma } from '@/db'
 import { firecrawl } from '@/lib/firecrawl'
+import { authFnMiddleware } from '@/midlleware/auth-middleware'
 import { SingleImportSchema } from '../../components/import/single-tab'
-import { getServerSession } from '@/modules/auth/functions/get-server-session'
 
 const extractSchema = z.object({
   author: z.string().nullable(),
@@ -12,14 +12,13 @@ const extractSchema = z.object({
 })
 
 export const scrapeUrlFn = createServerFn({ method: 'POST' })
+  .middleware([authFnMiddleware])
   .inputValidator(SingleImportSchema)
-  .handler(async ({ data }) => {
-    const session = await getServerSession()
-
+  .handler(async ({ data, context }) => {
     const item = await prisma.items.create({
       data: {
         url: data.url,
-        userId: session.user.id,
+        userId: context.session.user.id,
         status: 'PROCESSING',
       },
     })

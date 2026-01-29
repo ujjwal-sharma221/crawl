@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import { toast } from 'sonner'
 import { useTransition } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -33,6 +34,7 @@ export function SingleTab() {
     onSubmit: async ({ value }) => {
       startTransition(async () => {
         await scrapeUrlFn({ data: value })
+        toast.success('URL scraped successfully')
       })
     },
   })

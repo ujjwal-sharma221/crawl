@@ -6,7 +6,7 @@ import { firecrawl } from '@/lib/firecrawl'
 import { authFnMiddleware } from '@/midlleware/auth-middleware'
 import { SingleImportSchema } from '../../components/import/single-tab'
 
-const extractSchema = z.object({
+export const extractSchema = z.object({
   author: z.string().nullable(),
   publishedAt: z.string().nullable(),
 })

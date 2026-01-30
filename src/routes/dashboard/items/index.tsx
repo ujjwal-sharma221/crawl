@@ -1,7 +1,9 @@
-import { toast } from 'sonner'
+import z from 'zod/v4'
+import { useEffect, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Archive03Icon, CopyLinkIcon } from '@hugeicons/core-free-icons'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { zodValidator } from '@tanstack/zod-adapter'
+import { Archive03Icon, SearchList02Icon } from '@hugeicons/core-free-icons'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 
 import {
   Empty,
@@ -18,29 +20,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
+
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ItemStatus } from '@/generated/prisma/enums'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader } from '@/components/ui/card'
 import { getItemsFn } from '@/modules/dashboard/functions/items/get-items'
+import { ItemList } from '@/modules/dashboard/components/items/item-list'
+
+const itemSearchSchema = z.object({
+  search: z.string().default(''),
+  status: z
+    .union([z.enum(Object.values(ItemStatus)), z.literal('all')])
+    .default('all'),
+})
 
 export const Route = createFileRoute('/dashboard/items/')({
   component: RouteComponent,
   loader: () => getItemsFn(),
   pendingComponent: () => <LoadingSkeleton />,
+  validateSearch: zodValidator(itemSearchSchema),
 })
 
 function RouteComponent() {
   const data = Route.useLoaderData()
+  const { search, status } = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
 
-  const handleCopyLink = (link: string) => {
-    navigator.clipboard.writeText(link)
-    toast.message('Link copied to clipboard')
-  }
+  const [searchInput, setSearchInput] = useState(search)
+
+  useEffect(() => {
+    if (search === searchInput) return
+
+    const timeoutId = setTimeout(() => {
+      navigate({ search: (prev) => ({ ...prev, search: searchInput }) })
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [searchInput, navigate, search])
 
   if (data.length === 0) return <EmptyState />
+
+  const filteredItems = data.filter((item) => {
+    const matchQuery =
+      search === '' ||
+      item.title?.toLowerCase().includes(search.toLowerCase()) ||
+      item.tags.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
+    const matchStatus = status === 'all' || item.status === status
+
+    return matchQuery && matchStatus
+  })
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -50,8 +80,19 @@ function RouteComponent() {
       </div>
 
       <div className="flex gap-4">
-        <Input placeholder="Search by title or tags" />
-        <Select>
+        <Input
+          placeholder="Search by title or tags"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+        <Select
+          value={status}
+          onValueChange={(value) =>
+            navigate({
+              search: (prev) => ({ ...prev, status: value as typeof status }),
+            })
+          }
+        >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Select a status" />
           </SelectTrigger>
@@ -66,55 +107,11 @@ function RouteComponent() {
         </Select>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {data &&
-          data.length > 0 &&
-          data.map((item) => (
-            <Card
-              key={item.id}
-              className="group overflow-hidden transition-all hover:shadow-lg pt-0"
-            >
-              <Link to="/dashboard" className="block">
-                {item.ogImage && (
-                  <div className="aspect-video w-full overflow-hidden bg-muted">
-                    <img
-                      src={item.ogImage}
-                      alt={item.title ?? 'Thumbnail'}
-                      className="size-full object-cover transition-transform hover:scale-110"
-                    />
-                  </div>
-                )}
-              </Link>
-              <CardHeader className="space-y-3 pt-4">
-                <div className="flex items-center justify-between gap-2">
-                  <Badge
-                    variant={
-                      item.status === 'COMPLETED' ? 'default' : 'secondary'
-                    }
-                  >
-                    {item.status.toLowerCase()}
-                  </Badge>
-                  <Button
-                    onClick={() => handleCopyLink(item.url)}
-                    size="icon"
-                    variant="outline"
-                    className="size-8"
-                  >
-                    <HugeiconsIcon icon={CopyLinkIcon} className="size-4" />
-                  </Button>
-                </div>
-
-                <CardTitle className="line-clamp-1 text-xl leading-snug group-hover:text-primary transition-colors">
-                  {item.title}
-                </CardTitle>
-
-                {item.author && (
-                  <p className="text-xs text-muted-foreground">{item.author}</p>
-                )}
-              </CardHeader>
-            </Card>
-          ))}
-      </div>
+      {filteredItems.length === 0 ? (
+        <EmptyFilteredItems />
+      ) : (
+        <ItemList items={filteredItems} />
+      )}
     </div>
   )
 }
@@ -133,9 +130,27 @@ const EmptyState = () => {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center gap-2">
-        <Button>Create Item</Button>
-        <Button variant="outline">Import Item</Button>
+        <Button variant="outline" asChild>
+          <Link to="/dashboard/import">Import urls</Link>
+        </Button>
       </EmptyContent>
+    </Empty>
+  )
+}
+
+const EmptyFilteredItems = () => {
+  return (
+    <Empty className="border rounded-lg h-full">
+      <EmptyHeader>
+        <EmptyMedia>
+          <HugeiconsIcon icon={SearchList02Icon} className="size-12" />
+        </EmptyMedia>
+
+        <EmptyTitle>No items found</EmptyTitle>
+        <EmptyDescription>
+          No items found for the selected filter.
+        </EmptyDescription>
+      </EmptyHeader>
     </Empty>
   )
 }

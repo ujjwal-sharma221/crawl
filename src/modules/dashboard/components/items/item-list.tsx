@@ -21,7 +21,11 @@ export function ItemList({ items }: { items: Items[] }) {
           key={item.id}
           className="group overflow-hidden transition-all hover:shadow-lg pt-0"
         >
-          <Link to="/dashboard" className="block">
+          <Link
+            to="/dashboard/items/$itemId"
+            params={{ itemId: item.id }}
+            className="block"
+          >
             {item.ogImage && (
               <div className="aspect-video w-full overflow-hidden bg-muted">
                 <img

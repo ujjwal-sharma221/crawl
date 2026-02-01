@@ -41,6 +41,13 @@ export const Route = createFileRoute('/dashboard/items/')({
   loader: () => getItemsFn(),
   pendingComponent: () => <LoadingSkeleton />,
   validateSearch: zodValidator(itemSearchSchema),
+  head: () => ({
+    meta: [
+      {
+        title: 'Items',
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {

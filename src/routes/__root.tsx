@@ -17,7 +17,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Crawl',
       },
     ],
     links: [
@@ -40,7 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider>
           {children}
-          <Toaster position="top-center" invert closeButton />
+          <Toaster position="top-center" closeButton />
         </ThemeProvider>
         <TanStackDevtools
           config={{

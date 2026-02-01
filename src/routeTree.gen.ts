@@ -19,7 +19,9 @@ import { Route as DashboardDiscoverRouteImport } from './routes/dashboard/discov
 import { Route as DashboardItemsIndexRouteImport } from './routes/dashboard/items/index'
 import { Route as AuthRegisterIndexRouteImport } from './routes/_auth/register/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
+import { Route as DashboardItemsItemIdRouteImport } from './routes/dashboard/items/$itemId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiAiSummaryRouteImport } from './routes/api/ai/summary'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -70,9 +72,19 @@ const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const DashboardItemsItemIdRoute = DashboardItemsItemIdRouteImport.update({
+  id: '/items/$itemId',
+  path: '/items/$itemId',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiSummaryRoute = ApiAiSummaryRouteImport.update({
+  id: '/api/ai/summary',
+  path: '/api/ai/summary',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -83,7 +95,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/discover': typeof DashboardDiscoverRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/ai/summary': typeof ApiAiSummaryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/items/$itemId': typeof DashboardItemsItemIdRoute
   '/login/': typeof AuthLoginIndexRoute
   '/register/': typeof AuthRegisterIndexRoute
   '/dashboard/items/': typeof DashboardItemsIndexRoute
@@ -94,7 +108,9 @@ export interface FileRoutesByTo {
   '/dashboard/discover': typeof DashboardDiscoverRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/ai/summary': typeof ApiAiSummaryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/items/$itemId': typeof DashboardItemsItemIdRoute
   '/login': typeof AuthLoginIndexRoute
   '/register': typeof AuthRegisterIndexRoute
   '/dashboard/items': typeof DashboardItemsIndexRoute
@@ -108,7 +124,9 @@ export interface FileRoutesById {
   '/dashboard/discover': typeof DashboardDiscoverRoute
   '/dashboard/import': typeof DashboardImportRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/ai/summary': typeof ApiAiSummaryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/items/$itemId': typeof DashboardItemsItemIdRoute
   '/_auth/login/': typeof AuthLoginIndexRoute
   '/_auth/register/': typeof AuthRegisterIndexRoute
   '/dashboard/items/': typeof DashboardItemsIndexRoute
@@ -122,7 +140,9 @@ export interface FileRouteTypes {
     | '/dashboard/discover'
     | '/dashboard/import'
     | '/dashboard/'
+    | '/api/ai/summary'
     | '/api/auth/$'
+    | '/dashboard/items/$itemId'
     | '/login/'
     | '/register/'
     | '/dashboard/items/'
@@ -133,7 +153,9 @@ export interface FileRouteTypes {
     | '/dashboard/discover'
     | '/dashboard/import'
     | '/dashboard'
+    | '/api/ai/summary'
     | '/api/auth/$'
+    | '/dashboard/items/$itemId'
     | '/login'
     | '/register'
     | '/dashboard/items'
@@ -146,7 +168,9 @@ export interface FileRouteTypes {
     | '/dashboard/discover'
     | '/dashboard/import'
     | '/dashboard/'
+    | '/api/ai/summary'
     | '/api/auth/$'
+    | '/dashboard/items/$itemId'
     | '/_auth/login/'
     | '/_auth/register/'
     | '/dashboard/items/'
@@ -157,6 +181,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  ApiAiSummaryRoute: typeof ApiAiSummaryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -232,11 +257,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/dashboard/items/$itemId': {
+      id: '/dashboard/items/$itemId'
+      path: '/items/$itemId'
+      fullPath: '/dashboard/items/$itemId'
+      preLoaderRoute: typeof DashboardItemsItemIdRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai/summary': {
+      id: '/api/ai/summary'
+      path: '/api/ai/summary'
+      fullPath: '/api/ai/summary'
+      preLoaderRoute: typeof ApiAiSummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -260,6 +299,7 @@ interface DashboardRouteRouteChildren {
   DashboardDiscoverRoute: typeof DashboardDiscoverRoute
   DashboardImportRoute: typeof DashboardImportRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardItemsItemIdRoute: typeof DashboardItemsItemIdRoute
   DashboardItemsIndexRoute: typeof DashboardItemsIndexRoute
 }
 
@@ -267,6 +307,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardDiscoverRoute: DashboardDiscoverRoute,
   DashboardImportRoute: DashboardImportRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardItemsItemIdRoute: DashboardItemsItemIdRoute,
   DashboardItemsIndexRoute: DashboardItemsIndexRoute,
 }
 
@@ -279,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  ApiAiSummaryRoute: ApiAiSummaryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
